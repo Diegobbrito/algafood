@@ -8,21 +8,16 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 
-public class InclusaoCozinhaMain {
+public class BuscaCozinhaMain {
     public static void main(String[] args) {
         ApplicationContext applicationContext = new SpringApplicationBuilder(AlgafoodApiApplication.class)
                 .web(WebApplicationType.NONE)
                 .run(args);
 
         CadastroCozinha cadastroCozinha = applicationContext.getBean(CadastroCozinha.class);
+        Cozinha cozinha = cadastroCozinha.buscar(1L);
 
-        Cozinha c1 = new Cozinha();
-        c1.setName("Brasileira");
-        Cozinha c2 = new Cozinha();
-        c2.setName("Japonesa");
-
-        cadastroCozinha.salvar(c1);
-        cadastroCozinha.salvar(c2);
+        System.out.println(cozinha.getName());
 
     }
 }
