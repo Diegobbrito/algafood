@@ -29,6 +29,7 @@ public class CadastroCozinha {
 
     @Transactional
     public void excluir(Cozinha cozinha){
+        cozinha = buscar(cozinha.getId());
         manager.remove(cozinha);
     }
 
