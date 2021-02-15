@@ -22,8 +22,8 @@ public class Restaurante {
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    private boolean ativo = false;
-    private boolean aberto = false;
+    private boolean ativo;
+    private boolean aberto;
     private Date dataCadastro;
     private Date dataAtualizacao;
 
