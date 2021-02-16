@@ -35,7 +35,7 @@ public class RestauranteService {
 
     public void excluir(Long id) {
         try {
-//            restauranteRepository.remover(id);
+            restauranteRepository.remover(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de Restaurante com o código %d.", id));
         } catch (DataIntegrityViolationException e) {
