@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -76,6 +77,18 @@ public class RestauranteController {
         merge(campos, restauranteAtual);
 
         return atualizar(id, restauranteAtual);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Restaurante> remover(@PathVariable Long id) {
+        try {
+            restauranteService.excluir(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadeEmUsoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (EntidadeNaoEncontradaException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino) {
