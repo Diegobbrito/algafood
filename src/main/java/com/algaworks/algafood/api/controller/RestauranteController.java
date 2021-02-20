@@ -39,7 +39,7 @@ public class RestauranteController {
     @GetMapping("/{id}")
     public ResponseEntity<Restaurante> buscar(@PathVariable Long id) {
         Optional<Restaurante> restaurante = restauranteRepository.findById(id);
-        return restaurante.map(ResponseEntity::ok).orElseGet(() ->ResponseEntity.notFound().build());
+        return restaurante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -54,15 +54,15 @@ public class RestauranteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
-        Optional<Restaurante> restauranteAtual = restauranteRepository.findById(id);
-        if (restauranteAtual.isPresent()) {
-            try {
-                BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
-                Restaurante restauranteSalvo = restauranteService.salvar(restauranteAtual.get());
-                return ResponseEntity.ok(restauranteSalvo);
-            } catch (EntidadeNaoEncontradaException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
+        try {
+            Restaurante restauranteAtual = restauranteRepository.findById(id).orElse(null);
+            if (restauranteAtual != null) {
+                BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento");
+                restauranteAtual = restauranteService.salvar(restauranteAtual);
+                return ResponseEntity.ok(restauranteAtual);
             }
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.notFound().build();
     }
@@ -87,7 +87,7 @@ public class RestauranteController {
             return ResponseEntity.noContent().build();
         } catch (EntidadeEmUsoException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (EntidadeNaoEncontradaException e){
+        } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -104,7 +104,7 @@ public class RestauranteController {
     }
 
     @GetMapping("/frete")
-    public List<Restaurante> restauranteComFreteGratis(String nome){
+    public List<Restaurante> restauranteComFreteGratis(String nome) {
         return restauranteRepository.findComFreteGratis(nome);
     }
 
