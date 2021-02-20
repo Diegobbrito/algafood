@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
-import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
-
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
@@ -57,7 +54,7 @@ public class RestauranteController {
         try {
             Restaurante restauranteAtual = restauranteRepository.findById(id).orElse(null);
             if (restauranteAtual != null) {
-                BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco");
+                BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro");
                 restauranteAtual = restauranteService.salvar(restauranteAtual);
                 return ResponseEntity.ok(restauranteAtual);
             }

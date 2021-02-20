@@ -43,11 +43,12 @@ public class EstadoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Estado> atualizar(@PathVariable Long id, @RequestBody Estado estado) {
-        Optional<Estado> estadoAtual = estadoRepository.findById(id);
-        if (estadoAtual.isPresent()) {
-            BeanUtils.copyProperties(estado, estadoAtual.get(), "id");
-            Estado estadoSalvo = estadoService.salvar(estadoAtual.get());
-            return ResponseEntity.ok(estadoSalvo);
+        Estado estadoAtual = estadoRepository.findById(id).orElse(null);
+
+        if (estadoAtual != null) {
+            BeanUtils.copyProperties(estado, estadoAtual, "id");
+            estadoAtual = estadoService.salvar(estadoAtual);
+            return ResponseEntity.ok(estadoAtual);
         }
         return ResponseEntity.notFound().build();
     }
@@ -59,7 +60,7 @@ public class EstadoController {
             return ResponseEntity.noContent().build();
         } catch (EntidadeEmUsoException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (EntidadeNaoEncontradaException e){
+        } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.notFound().build();
         }
     }
