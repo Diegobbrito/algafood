@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,5 +25,5 @@ public class Grupo {
             joinColumns = @JoinColumn(name = "grupo_id"),
             inverseJoinColumns = @JoinColumn(name = "permissao_id")
     )
-    private List<Permissao> permissoes;
+    private List<Permissao> permissoes = new ArrayList<>();
 }
