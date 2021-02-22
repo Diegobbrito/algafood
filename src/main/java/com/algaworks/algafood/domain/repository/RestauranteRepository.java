@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long>, RestauranteRepositoryQueries, JpaSpecificationExecutor<Restaurante> {
 
-    @Query("from Restaurante r join r.cozinha left join fetch r.formasPagamento")
+//    @Query("from Restaurante r join r.cozinha left join fetch r.formasPagamento")
+    @Query("from Restaurante r join r.cozinha")
     List<Restaurante> findAll();
 
 //    @Query("from Restaurante where nome like %:nome% and cozinha.id = :id")
