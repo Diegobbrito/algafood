@@ -1,10 +1,8 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.domain.exception.CidadeNaoEncontradoException;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ public class CidadeService {
         try {
             cidadeRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new CidadeNaoEncontradoException(id);
+            throw new CidadeNaoEncontradaException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(MSG_CIDADE_EM_USO, id));
         }
@@ -41,6 +39,6 @@ public class CidadeService {
 
     public Cidade buscarOuFalhar(Long id) {
         return cidadeRepository.findById(id)
-                .orElseThrow(() -> new CidadeNaoEncontradoException(id));
+                .orElseThrow(() -> new CidadeNaoEncontradaException(id));
     }
 }
