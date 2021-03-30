@@ -23,8 +23,8 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Restaurante {
-    @EqualsAndHashCode.Include
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -32,17 +32,14 @@ public class Restaurante {
     @Column(nullable = false)
     private String nome;
 
-//    @DecimalMin("1")
     @PositiveOrZero
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-//    @JsonIgnore
-//    @JsonIgnoreProperties("hibernateLazyInitializer")
-    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
     @Valid
     @NotNull
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+    @ManyToOne
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,13 @@ import java.util.List;
 @Entity
 public class Cozinha {
     @Id
+    @NotNull(groups = Groups.CozinhaId.class)
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull(groups = Groups.CozinhaId.class)
     private Long id;
 
-    @Column(name="nome", nullable = false)
+    @NotBlank
+    @Column(nullable = false)
     private String nome;
 
     @JsonIgnore
