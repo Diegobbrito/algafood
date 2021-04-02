@@ -32,7 +32,7 @@ public class Restaurante {
     @Column(nullable = false)
     private String nome;
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "{TaxaFrete}")
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
