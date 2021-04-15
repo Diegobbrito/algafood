@@ -5,7 +5,10 @@ import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CozinhaService;
 import static io.restassured.RestAssured.given;
+
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ class CadastroCozinhaIT {
 
     @Test
     public void deveRetornarStatus200_QaundoConsultarCozinhas(){
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
             given()
                 .basePath("/cozinhas")
                 .port(port)
@@ -35,6 +39,21 @@ class CadastroCozinhaIT {
                 .get()
             .then()
                 .statusCode(200);
+    }
+
+    @Test
+    public void deveRetornar4Cozinhas_QaundoConsultarCozinhas(){
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
+        given()
+                .basePath("/cozinhas")
+                .port(port)
+                .accept(ContentType.JSON)
+                .when()
+                .get()
+                .then()
+                .body("", Matchers.hasSize(4))
+        .body("nome", Matchers.hasItems("Indiana", "Tailandesa"));
     }
 
     @Test
