@@ -15,20 +15,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource("/application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CadastroCozinhaIT {
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private Flyway flyway;
-
-    @LocalServerPort
-    private int port;
 
     @BeforeAll
     public void setUp(){
@@ -104,9 +105,10 @@ class CadastroCozinhaIT {
         Cozinha novaCozinha = new Cozinha();
         novaCozinha.setNome("Chinesa");
         cozinhaService.salvar(novaCozinha);
-        Assertions.assertThrows(EntidadeEmUsoException.class, () -> cozinhaService.excluir(1L) );
+        Assertions.assertThrows(EntidadeEmUsoException.class, () -> cozinhaService.excluir(2L) );
 
     }
+
     @Test
     public void deveFalhar_QuandoExcluirCozinhaInexistente() {
         Assertions.assertThrows(CozinhaNaoEncontradaException.class, () -> cozinhaService.excluir(8L) );
