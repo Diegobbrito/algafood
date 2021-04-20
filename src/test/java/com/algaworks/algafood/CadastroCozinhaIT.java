@@ -3,9 +3,14 @@ package com.algaworks.algafood;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
+import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CozinhaService;
 import static io.restassured.RestAssured.given;
 
+import com.algaworks.algafood.util.DatabaseCleaner;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.flywaydb.core.Flyway;
@@ -19,6 +24,12 @@ import org.springframework.test.context.TestPropertySource;
 
 import javax.validation.ConstraintViolationException;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,19 +40,25 @@ class CadastroCozinhaIT {
     private int port;
 
     @Autowired
-    private Flyway flyway;
+    private DatabaseCleaner databaseCleaner;
 
-    @BeforeAll
+    @Autowired
+    private CozinhaRepository cozinhaRepository;
+
+    @Autowired
+    private RestauranteRepository restauranteRepository;
+
+    @BeforeEach
     public void setUp(){
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = port;
         RestAssured.basePath = "/cozinhas";
+
+        databaseCleaner.clearTables();
+
+        prepararDados();
     }
 
-    @BeforeEach
-    public void setFlyway(){
-        flyway.migrate();
-    }
 
     @Autowired
     private CozinhaService cozinhaService;
@@ -57,14 +74,14 @@ class CadastroCozinhaIT {
     }
 
     @Test
-    public void deveRetornar4Cozinhas_QuandoConsultarCozinhas(){
+    public void deveRetornar2Cozinhas_QuandoConsultarCozinhas(){
         given()
                 .accept(ContentType.JSON)
                 .when()
                 .get()
                 .then()
-                .body("", Matchers.hasSize(4))
-        .body("nome", Matchers.hasItems("Indiana", "Tailandesa"));
+                .body("", Matchers.hasSize(2))
+        .body("nome", Matchers.hasItems("Americana", "Tailandesa"));
     }
 
     @Test
@@ -105,12 +122,27 @@ class CadastroCozinhaIT {
         Cozinha novaCozinha = new Cozinha();
         novaCozinha.setNome("Chinesa");
         cozinhaService.salvar(novaCozinha);
-        Assertions.assertThrows(EntidadeEmUsoException.class, () -> cozinhaService.excluir(2L) );
+        Restaurante restaurante = new Restaurante();
+        restaurante.setCozinha(novaCozinha);
+        restaurante.setNome("Teste");
+        restaurante.setTaxaFrete(BigDecimal.valueOf(10));
+        restauranteRepository.save(restaurante);
+        Assertions.assertThrows(EntidadeEmUsoException.class, () -> cozinhaService.excluir(3L) );
 
     }
 
     @Test
     public void deveFalhar_QuandoExcluirCozinhaInexistente() {
         Assertions.assertThrows(CozinhaNaoEncontradaException.class, () -> cozinhaService.excluir(8L) );
+    }
+
+    private void prepararDados(){
+        Cozinha cozinha1 = new Cozinha();
+        cozinha1.setNome("Tailandesa");
+        cozinhaRepository.save(cozinha1);
+
+        Cozinha cozinha2 = new Cozinha();
+        cozinha2.setNome("Americana");
+        cozinhaRepository.save(cozinha2);
     }
 }
