@@ -99,7 +99,7 @@ class CadastroCozinhaIT {
                 .pathParam("cozinhaId", 2)
                 .accept(ContentType.JSON)
             .when()
-                .get("/{cozinhaId")
+                .get("/{cozinhaId}")
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("nome", equalTo("Americana"));
