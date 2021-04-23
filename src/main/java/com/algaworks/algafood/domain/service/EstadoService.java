@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EstadoService {
@@ -17,10 +18,12 @@ public class EstadoService {
     @Autowired
     private EstadoRepository estadoRepository;
 
+    @Transactional
     public Estado salvar(Estado estado) {
         return estadoRepository.save(estado);
     }
 
+    @Transactional
     public void excluir(Long id) {
         try {
             estadoRepository.deleteById(id);
